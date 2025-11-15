@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Tempo de geração: 26-Out-2025 às 01:26
+-- Tempo de geração: 10-Nov-2025 às 01:27
 -- Versão do servidor: 5.7.40
 -- versão do PHP: 8.0.26
 
@@ -24,53 +24,57 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `alternativa`
+-- Estrutura da tabela `alternativa_questao`
 --
 
-DROP TABLE IF EXISTS `alternativa`;
-CREATE TABLE IF NOT EXISTS `alternativa` (
-  `Id_Alt` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `alternativa_questao`;
+CREATE TABLE IF NOT EXISTS `alternativa_questao` (
+  `Id_AltQ` int(11) NOT NULL AUTO_INCREMENT,
   `Id_Quest` int(11) NOT NULL,
-  `Texto_Alternativa` varchar(255) NOT NULL,
-  `Resp_Cor_Alt` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`Id_Alt`),
-  KEY `Id_Quest` (`Id_Quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `Tipo` enum('ME','VF','LACUNA','ASSOCIACAO') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Grupo` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Texto` text COLLATE utf8mb4_unicode_ci,
+  `Correta` tinyint(1) DEFAULT '0',
+  `Extra` json DEFAULT NULL,
+  PRIMARY KEY (`Id_AltQ`),
+  KEY `fk_altquest_quest` (`Id_Quest`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `alternativa_questao`
+--
+
+INSERT INTO `alternativa_questao` (`Id_AltQ`, `Id_Quest`, `Tipo`, `Grupo`, `Texto`, `Correta`, `Extra`) VALUES
+(37, 20, 'VF', 'A0', 'A ambiência de ma Unidade Basica de Saúde refere-se ao espaço físico social, protissional e de elações interpessoais, entendido como lugar acolhedora e que deve proporcionar uma atençao humana para as pessoas, além de um ambiente saudável para o trabalho dos profissionais de saúde.', 1, NULL),
+(38, 20, 'VF', 'A1', 'Recomenda-se uma população adscrita por Equipe de Atenção Básica (eAB) e de Saúde da Família eSF) de 3.000 a 4.500 pessoas da Atencao Basica. ocalizada dentro do seu território, garantindo os princípios e diretrizes.', 1, NULL),
+(39, 20, 'VF', 'A2', 'Hà a obrigatoriedade de carga horária de 40 (quarenta) horas semanais para todos os profissionais de saúde membros das Equipes da Atenção Básica (eAB),.', 0, NULL),
+(40, 20, 'VF', 'A3', 'Em áreas de grande dispersão territorial, áreas de risco e vulnerabilidade social, recomenda-se a cobertura de 100% da população com numero máximo de 750 pessoas por ACS.', 0, NULL),
+(41, 21, 'VF', 'A0', 'A ambiência de ma Unidade Basica de Saúde refere-se ao espaço físico social, protissional e de elações interpessoais, entendido como lugar acolhedora e que deve proporcionar uma atençao humana para as pessoas, além de um ambiente saudável para o trabalho dos profissionais de saúde.', 1, NULL),
+(42, 21, 'VF', 'A1', 'Recomenda-se uma população adscrita por Equipe de Atenção Básica (eAB) e de Saúde da Família eSF) de 3.000 a 4.500 pessoas da Atencao Basica. ocalizada dentro do seu território, garantindo os princípios e diretrizes.', 1, NULL),
+(43, 21, 'VF', 'A2', 'Hà a obrigatoriedade de carga horária de 40 (quarenta) horas semanais para todos os profissionais de saúde membros das Equipes da Atenção Básica (eAB),.', 0, NULL),
+(44, 21, 'VF', 'A3', 'Em áreas de grande dispersão territorial, áreas de risco e vulnerabilidade social, recomenda-se a cobertura de 100% da população com numero máximo de 750 pessoas por ACS.', 0, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `associacao`
+-- Estrutura da tabela `curso`
 --
 
-DROP TABLE IF EXISTS `associacao`;
-CREATE TABLE IF NOT EXISTS `associacao` (
-  `Id_Ass` int(11) NOT NULL AUTO_INCREMENT,
-  `Id_Quest` int(11) NOT NULL,
-  `Item_Ori` varchar(255) NOT NULL,
-  `Item_Dest` varchar(255) NOT NULL,
-  `Num_Ori` int(11) DEFAULT NULL,
-  `Num_Dest` int(11) DEFAULT NULL,
-  PRIMARY KEY (`Id_Ass`),
-  KEY `Id_Quest` (`Id_Quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
+DROP TABLE IF EXISTS `curso`;
+CREATE TABLE IF NOT EXISTS `curso` (
+  `Id_Curso` int(11) NOT NULL AUTO_INCREMENT,
+  `Nome_Curso` varchar(255) NOT NULL,
+  `Sigla` varchar(10) NOT NULL,
+  `Qtd_Periodos` int(11) NOT NULL DEFAULT '8',
+  PRIMARY KEY (`Id_Curso`)
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 --
--- Estrutura da tabela `lacuna`
+-- Extraindo dados da tabela `curso`
 --
 
-DROP TABLE IF EXISTS `lacuna`;
-CREATE TABLE IF NOT EXISTS `lacuna` (
-  `Id_Lac` int(11) NOT NULL AUTO_INCREMENT,
-  `Id_Quest` int(11) NOT NULL,
-  `Posicao` int(11) NOT NULL,
-  `Num_Lac` int(11) DEFAULT NULL,
-  `Resp_Cor_Lac` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`Id_Lac`),
-  KEY `Id_Quest` (`Id_Quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+INSERT INTO `curso` (`Id_Curso`, `Nome_Curso`, `Sigla`, `Qtd_Periodos`) VALUES
+(14, 'Graduação em Psicologia', 'GP', 8);
 
 -- --------------------------------------------------------
 
@@ -80,10 +84,69 @@ CREATE TABLE IF NOT EXISTS `lacuna` (
 
 DROP TABLE IF EXISTS `materias`;
 CREATE TABLE IF NOT EXISTS `materias` (
-  `Id_Mat` int(11) NOT NULL AUTO_INCREMENT,
-  `Nome_Materia` varchar(100) NOT NULL,
-  PRIMARY KEY (`Id_Mat`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `Id_Materia` int(11) NOT NULL AUTO_INCREMENT,
+  `Nome_Materia` varchar(255) NOT NULL,
+  `Id_Curso` int(11) NOT NULL,
+  `Id_Periodo` int(11) NOT NULL,
+  PRIMARY KEY (`Id_Materia`),
+  KEY `fk_materia_periodo` (`Id_Periodo`),
+  KEY `fk_materia_curso` (`Id_Curso`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `materias`
+--
+
+INSERT INTO `materias` (`Id_Materia`, `Nome_Materia`, `Id_Curso`, `Id_Periodo`) VALUES
+(4, 'Integrada', 14, 43);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `periodo`
+--
+
+DROP TABLE IF EXISTS `periodo`;
+CREATE TABLE IF NOT EXISTS `periodo` (
+  `Id_Periodo` int(11) NOT NULL AUTO_INCREMENT,
+  `Id_Curso` int(11) NOT NULL,
+  `NumeroPeriodo` int(11) NOT NULL,
+  PRIMARY KEY (`Id_Periodo`),
+  KEY `fk_periodo_curso` (`Id_Curso`)
+) ENGINE=MyISAM AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `periodo`
+--
+
+INSERT INTO `periodo` (`Id_Periodo`, `Id_Curso`, `NumeroPeriodo`) VALUES
+(32, 11, 8),
+(31, 11, 7),
+(30, 11, 6),
+(29, 11, 5),
+(28, 11, 4),
+(27, 11, 3),
+(26, 11, 2),
+(25, 11, 1),
+(24, 10, 8),
+(23, 10, 7),
+(22, 10, 6),
+(21, 10, 5),
+(20, 10, 4),
+(19, 10, 3),
+(18, 10, 2),
+(17, 10, 1),
+(33, 12, 1),
+(34, 13, 1),
+(35, 13, 2),
+(36, 13, 3),
+(37, 13, 4),
+(38, 13, 5),
+(39, 13, 6),
+(40, 13, 7),
+(41, 13, 8),
+(42, 14, 1),
+(43, 14, 2);
 
 -- --------------------------------------------------------
 
@@ -101,20 +164,22 @@ CREATE TABLE IF NOT EXISTS `professor` (
   `Data_Cadastro` datetime DEFAULT CURRENT_TIMESTAMP,
   `Aprovado` tinyint(1) DEFAULT '0',
   `IsAdmin` tinyint(4) DEFAULT '0',
+  `Endereco` varchar(255) DEFAULT NULL,
+  `Telefone` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Id_Prof`),
   UNIQUE KEY `CPF` (`CPF`),
   UNIQUE KEY `Email` (`Email`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `professor`
 --
 
-INSERT INTO `professor` (`Id_Prof`, `Nome`, `CPF`, `Email`, `Senha`, `Data_Cadastro`, `Aprovado`, `IsAdmin`) VALUES
-(4, 'pedro', '12345678901', 'calegarip0@gmail.com', '$2y$10$VaEcfcDck5BVqnMi4lGKSO8BxfPVwtZRNyVIdZMoBaPsh4u9lwQL6', '2025-10-24 23:15:19', 1, 1),
-(5, 'teste', '12345678912', 'test@gmail.com', '$2y$10$p2D0o3RjelrPbf4Ud1T39e5cKa0xuFKFiJhbo9j9nBAIpVAK2E74q', '2025-10-25 00:36:35', 1, 0),
-(6, 'pedro', '12412432423', 'qweqw@djsaf.com', '$2y$10$VgUSqdYiUGKi8LZA/ei7WeU/UkX5Pd4RMcJozIpQlkHPznhK/bEOi', '2025-10-25 00:55:09', 2, 0),
-(7, 'pedro', '11111111111', 'pedro@ddwd.com', '$2y$10$0gKKR2iCkM89/SUA4NDbduooM2Ul3Suf5Pxgah/hYMmDwKmKct3Ka', '2025-10-25 01:31:29', 2, 0);
+INSERT INTO `professor` (`Id_Prof`, `Nome`, `CPF`, `Email`, `Senha`, `Data_Cadastro`, `Aprovado`, `IsAdmin`, `Endereco`, `Telefone`) VALUES
+(4, 'pedro', '12345678901', 'calegarip0@gmail.com', '$2y$10$8mhI4SGvciIQKjAyeK65Su7E4aHHOgkF1Uo2IBF8KMHGbA8B8x6pS', '2025-10-24 23:15:19', 1, 1, '', ''),
+(5, 'teste', '12345678912', 'test@gmail.com', '$2y$10$p2D0o3RjelrPbf4Ud1T39e5cKa0xuFKFiJhbo9j9nBAIpVAK2E74q', '2025-10-25 00:36:35', 1, 0, NULL, NULL),
+(6, 'pedro', '12412432423', 'qweqw@djsaf.com', '$2y$10$VgUSqdYiUGKi8LZA/ei7WeU/UkX5Pd4RMcJozIpQlkHPznhK/bEOi', '2025-10-25 00:55:09', 1, 0, NULL, NULL),
+(7, 'pedro', '11111111111', 'pedro@ddwd.com', '$2y$10$0gKKR2iCkM89/SUA4NDbduooM2Ul3Suf5Pxgah/hYMmDwKmKct3Ka', '2025-10-25 01:31:29', 1, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -130,6 +195,39 @@ CREATE TABLE IF NOT EXISTS `professormateria` (
   KEY `Id_Mat` (`Id_Mat`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+--
+-- Extraindo dados da tabela `professormateria`
+--
+
+INSERT INTO `professormateria` (`Id_Prof`, `Id_Mat`) VALUES
+(4, 19);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `professor_materia_turma`
+--
+
+DROP TABLE IF EXISTS `professor_materia_turma`;
+CREATE TABLE IF NOT EXISTS `professor_materia_turma` (
+  `Id_PMT` int(11) NOT NULL AUTO_INCREMENT,
+  `Id_Prof` int(11) NOT NULL,
+  `Id_Materia` int(11) NOT NULL,
+  `Id_Turma` int(11) NOT NULL,
+  PRIMARY KEY (`Id_PMT`),
+  KEY `fk_pmt_prof` (`Id_Prof`),
+  KEY `fk_pmt_materia` (`Id_Materia`),
+  KEY `fk_pmt_turma` (`Id_Turma`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `professor_materia_turma`
+--
+
+INSERT INTO `professor_materia_turma` (`Id_PMT`, `Id_Prof`, `Id_Materia`, `Id_Turma`) VALUES
+(6, 4, 4, 5),
+(7, 4, 5, 6);
+
 -- --------------------------------------------------------
 
 --
@@ -140,15 +238,24 @@ DROP TABLE IF EXISTS `questao`;
 CREATE TABLE IF NOT EXISTS `questao` (
   `Id_Quest` int(11) NOT NULL AUTO_INCREMENT,
   `Enunciado` text NOT NULL,
-  `Tipo_Questao` varchar(50) NOT NULL,
-  `Nivel_Dificuldade` varchar(30) DEFAULT NULL,
+  `Tipo_Questao` enum('ME','VF','LACUNA','ASSOCIACAO') NOT NULL,
+  `Nivel_Dificuldade` enum('Fácil','Médio','Difícil') DEFAULT 'Médio',
   `Qtd_Lacunas` int(11) DEFAULT '0',
-  `Id_Mat` int(11) NOT NULL,
+  `Id_Materia` int(11) NOT NULL,
   `Id_Prof` int(11) NOT NULL,
+  `Data_Criacao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id_Quest`),
-  KEY `Id_Mat` (`Id_Mat`),
-  KEY `Id_Prof` (`Id_Prof`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  KEY `fk_questao_materia` (`Id_Materia`),
+  KEY `fk_questao_prof` (`Id_Prof`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `questao`
+--
+
+INSERT INTO `questao` (`Id_Quest`, `Enunciado`, `Tipo_Questao`, `Nivel_Dificuldade`, `Qtd_Lacunas`, `Id_Materia`, `Id_Prof`, `Data_Criacao`) VALUES
+(20, 'Questão 02: Em relação a infraestrutura, ambiência e funcionamento da Atencão Básica, de acordo ANALISE as assertivas abaixo, ASSINALANDO\r\ncom a Política Nacional de Atencão Básica (2017),\r\nV, se verdadeiras, ou F, se falsas.', 'VF', 'Difícil', 0, 4, 4, '2025-11-10 01:17:56'),
+(21, 'Questão 02: Em relação a infraestrutura, ambiência e funcionamento da Atencão Básica, de acordo ANALISE as assertivas abaixo, ASSINALANDO\r\ncom a Política Nacional de Atencão Básica (2017),\r\nV, se verdadeiras, ou F, se falsas.', 'VF', 'Difícil', 0, 4, 4, '2025-11-10 01:26:28');
 
 -- --------------------------------------------------------
 
@@ -163,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `recuperacaosenha` (
   `token` varchar(255) NOT NULL,
   `expiracao` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `recuperacaosenha`
@@ -181,6 +288,83 @@ INSERT INTO `recuperacaosenha` (`id`, `email`, `token`, `expiracao`) VALUES
 (11, 'test@gmail.com', '64272e9075929be4ab4f912b9cfac643', '2025-10-25 05:27:25'),
 (12, 'calegarip0@gmail.com', 'dec3ab9bc066e86abbba1b066a40ad75', '2025-10-25 05:29:43'),
 (13, 'luana.wggg@gmail.com', '68614be5d71c402dcf2995b4f0b4ce90', '2025-10-26 02:22:33');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `turma`
+--
+
+DROP TABLE IF EXISTS `turma`;
+CREATE TABLE IF NOT EXISTS `turma` (
+  `Id_Turma` int(11) NOT NULL AUTO_INCREMENT,
+  `Nome_Turma` varchar(45) NOT NULL,
+  `Id_Curso` int(11) NOT NULL,
+  `Id_Periodo` int(11) NOT NULL,
+  `Id_Materia` int(11) DEFAULT NULL,
+  `Id_Prof` int(11) DEFAULT NULL,
+  `Turno` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`Id_Turma`),
+  KEY `fk_turma_curso` (`Id_Curso`),
+  KEY `fk_turma_periodo` (`Id_Periodo`),
+  KEY `fk_turma_materia` (`Id_Materia`),
+  KEY `fk_turma_prof` (`Id_Prof`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `turma`
+--
+
+INSERT INTO `turma` (`Id_Turma`, `Nome_Turma`, `Id_Curso`, `Id_Periodo`, `Id_Materia`, `Id_Prof`, `Turno`) VALUES
+(5, '1º Período - Turma 01', 13, 34, 4, 4, 'Vespertino'),
+(6, '2º Período - Turma 01', 14, 43, 5, 4, 'Matutino');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura stand-in para vista `vw_questoes_com_alternativas`
+-- (Veja abaixo para a view atual)
+--
+DROP VIEW IF EXISTS `vw_questoes_com_alternativas`;
+CREATE TABLE IF NOT EXISTS `vw_questoes_com_alternativas` (
+`Id_Quest` int(11)
+,`Enunciado` text
+,`Tipo_Questao` enum('ME','VF','LACUNA','ASSOCIACAO')
+,`Nivel_Dificuldade` enum('Fácil','Médio','Difícil')
+,`Id_AltQ` int(11)
+,`Tipo_Alternativa` enum('ME','VF','LACUNA','ASSOCIACAO')
+,`Grupo` varchar(10)
+,`Texto` text
+,`Correta` tinyint(1)
+,`Extra` json
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para vista `vw_questoes_com_alternativas`
+--
+DROP TABLE IF EXISTS `vw_questoes_com_alternativas`;
+
+DROP VIEW IF EXISTS `vw_questoes_com_alternativas`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_questoes_com_alternativas`  AS SELECT `q`.`Id_Quest` AS `Id_Quest`, `q`.`Enunciado` AS `Enunciado`, `q`.`Tipo_Questao` AS `Tipo_Questao`, `q`.`Nivel_Dificuldade` AS `Nivel_Dificuldade`, `aq`.`Id_AltQ` AS `Id_AltQ`, `aq`.`Tipo` AS `Tipo_Alternativa`, `aq`.`Grupo` AS `Grupo`, `aq`.`Texto` AS `Texto`, `aq`.`Correta` AS `Correta`, `aq`.`Extra` AS `Extra` FROM (`questao` `q` left join `alternativa_questao` `aq` on((`q`.`Id_Quest` = `aq`.`Id_Quest`))) ORDER BY `q`.`Id_Quest` ASC, `aq`.`Id_AltQ` ASC  ;
+
+--
+-- Restrições para despejos de tabelas
+--
+
+--
+-- Limitadores para a tabela `alternativa_questao`
+--
+ALTER TABLE `alternativa_questao`
+  ADD CONSTRAINT `fk_altquest_quest` FOREIGN KEY (`Id_Quest`) REFERENCES `questao` (`Id_Quest`) ON DELETE CASCADE;
+
+--
+-- Limitadores para a tabela `questao`
+--
+ALTER TABLE `questao`
+  ADD CONSTRAINT `fk_questao_materia` FOREIGN KEY (`Id_Materia`) REFERENCES `materias` (`Id_Materia`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_questao_prof` FOREIGN KEY (`Id_Prof`) REFERENCES `professor` (`Id_Prof`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
